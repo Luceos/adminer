@@ -1,12 +1,14 @@
+@import url('http://fonts.googleapis.com/css?family=Open+Sans');
+
 * {
-	font: 13px/1.5 Verdana, 'Geneva CE', lucida, sans-serif;
+	font: 13px/1.5 'Open Sans', Verdana, 'Geneva CE', lucida, sans-serif;
 	color:#333333;
 	margin:0px;
 	padding:0px;
 }
 
 a,a:visited {
-	color:#006aeb;
+	color:#F4635F;
 	text-decoration:none;
 	padding:3px 1px;
 }
@@ -23,16 +25,16 @@ a,a:visited {
 }
 
 a:hover {
-	color:white;
-	background:#006aeb;
+	color:#3A8F93;
+	/*background:#006aeb;*/
 }
 
 h1 {
 	font-size:1.9em;
 	font-weight:normal;
 	background:white;
-	color:#1e5eb6;
-	border-bottom:1px solid #f4f4f4;
+	color:#B31F1B;
+	border-bottom:1px solid #D93E3A;
 
 	padding:20px;
 	margin:0px;
@@ -47,8 +49,8 @@ h2,h3 {
 	font-size:1.5em;
 	font-weight:normal;
 	background:white;
-	color:#1e5eb6;
-	border-bottom:1px solid #f4f4f4;
+	color:#B31F1B;
+	/*border-bottom:1px solid #D93E3A;*/
 
 	padding:20px 0px;
 	margin:0px;
@@ -66,15 +68,15 @@ input,select,textarea {
 }
 
 input[type=submit] {
-	color:white;
-	background:#3390e6;
+	color:#95D2D5;
+	background:#11686C;
 	padding:3px 10px;
 	cursor:pointer;
 	border:0px solid;
 }
 
 input[type=submit]:hover{
-	background:blue;
+	background:#75A619;
 }
 
 input[type=checkbox]{
@@ -229,7 +231,7 @@ input[name=logout]:hover {
 }
 
 #logins a:hover, #tables a:hover { 
-	background:#006aeb;
+	/*background:#006aeb;*/
 }
 
 #logout {
