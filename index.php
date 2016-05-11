@@ -1317,165 +1317,821 @@ credentials(){return
 array(SERVER,$_GET["username"],get_password());}function
 permanentLogin($i=false){return
 password_file($i);}
+
+    function
+    bruteForceKey()
+    {
+        return $_SERVER["REMOTE_ADDR"];
+    }
 function
-bruteForceKey(){return$_SERVER["REMOTE_ADDR"];}
+database()
+{
+    return
+        DB;
+}
 function
-database(){return
-DB;}
-function
-queryTimeout(){return
-5;}
+queryTimeout()
+{
+    return
+        5;
+}
 
 
 function
-headers(){return
-true;}function
-head(){return
-true;}function
-loginForm(){global$Vb;echo'<table cellspacing="0">
-<tr><th>System<td>',html_select("auth[driver]",$Vb,DRIVER,"loginDriver(this);"),'<tr><th>Server<td><input name="auth[server]" value="',h(SERVER),'" title="hostname[:port]" placeholder="localhost" autocapitalize="off">
-<tr><th>Username<td><input name="auth[username]" id="username" value="',h($_GET["username"]),'" autocapitalize="off">
+headers()
+{
+    return
+        true;
+}
+
+    function
+    head()
+    {
+        return
+            true;
+    }
+
+    function
+    loginForm()
+    {
+        global $Vb;
+        echo '<table cellspacing="0">
+<tr><th>System<td>', html_select("auth[driver]", $Vb, DRIVER,
+            "loginDriver(this);"), '<tr><th>Server<td><input name="auth[server]" value="', h(SERVER), '" title="hostname[:port]" placeholder="localhost" autocapitalize="off">
+<tr><th>Username<td><input name="auth[username]" id="username" value="', h($_GET["username"]), '" autocapitalize="off">
 <tr><th>Password<td><input type="password" name="auth[password]">
-<tr><th>Database<td><input name="auth[db]" value="',h($_GET["db"]);?>" autocapitalize="off">
-</table>
-<script type="text/javascript">
-var username = document.getElementById('username');
-focus(username);
-username.form['auth[driver]'].onchange();
-</script>
-<?php
+<tr><th>Database<td><input name="auth[db]" value="', h($_GET["db"]); ?>" autocapitalize="off">
+        </table>
+        <script type="text/javascript">
+            var username = document.getElementById('username');
+            focus(username);
+            username.form['auth[driver]'].onchange();
+        </script>
+        <?php
 
-echo"<p><input type='submit' value='".'Login'."'>\n",checkbox("auth[permanent]",1,$_COOKIE["adminer_permanent"],'Permanent login')."\n";}
+        echo "<p><input type='submit' value='" . 'Login' . "'>\n", checkbox("auth[permanent]", 1,
+                $_COOKIE["adminer_permanent"], 'Permanent login') . "\n";
+    }
 function
-login($Wd,$G){return
-true;}
-function
-fieldName($o,$Te=0){return'<span title="'.h($o["full_type"]).'">'.h($o["field"]).'</span>';}
-function
-selectLinks($Pg,$O=""){echo'<p class="links">';$Vd=array("select"=>'Select data');if(support("table")||support("indexes"))$Vd["table"]='Show structure';if(support("table")){if(is_view($Pg))$Vd["view"]='Alter view';else$Vd["create"]='Alter table';}if($O!==null)$Vd["edit"]='New item';foreach($Vd
-as$x=>$X)echo" <a href='".h(ME)."$x=".urlencode($Pg["Name"]).($x=="edit"?$O:"")."'".bold(isset($_GET[$x])).">$X</a>";echo"\n";}
-function
-foreignKeys($Q){return
-foreign_keys($Q);}
+login(
+    $Wd,
+    $G
+) {
+    return
+        true;
+}
 
-function
-backwardKeys($Q,$Og){return
-array();}function
-backwardKeysPrint($Na,$K){}
-function
-selectQuery($H,$fh){global$w;return"<p><code class='jush-$w'>".h(str_replace("\n"," ",$H))."</code> <span class='time'>($fh)</span>".(support("sql")?" <a href='".h(ME)."sql=".urlencode($H)."'>".'Edit'."</a>":"")."</p>";}
-function
-rowDescription($Q){return"";}
-function
-rowDescriptions($L,$Lc){return$L;}
-function
-selectLink($X,$o){}
-function
-selectVal($X,$_,$o,$af){$J=($X===null?"<i>NULL</i>":(preg_match("~char|binary~",$o["type"])&&!preg_match("~var~",$o["type"])?"<code>$X</code>":$X));if(preg_match('~blob|bytea|raw|file~',$o["type"])&&!is_utf8($X))$J=lang(array('%d byte','%d bytes'),strlen($af));return($_?"<a href='".h($_)."'".(is_url($_)?" rel='noreferrer'":"").">$J</a>":$J);}
-function
-editVal($X,$o){return$X;}
-function
-selectColumnsPrint($M,$f){global$Sc,$Xc;print_fieldset("select",'Select',$M);$s=0;$M[""]=array();foreach($M
-as$x=>$X){$X=$_GET["columns"][$x];$e=select_input(" name='columns[$s][col]' onchange='".($x!==""?"selectFieldChange(this.form)":"selectAddRow(this)").";'",$f,$X["col"]);echo"<div>".($Sc||$Xc?"<select name='columns[$s][fun]' onchange='helpClose();".($x!==""?"":" this.nextSibling.nextSibling.onchange();")."'".on_help("getTarget(event).value && getTarget(event).value.replace(/ |\$/, '(') + ')'",1).">".optionlist(array(-1=>"")+array_filter(array('Functions'=>$Sc,'Aggregation'=>$Xc)),$X["fun"])."</select>"."($e)":$e)."</div>\n";$s++;}echo"</div></fieldset>\n";}
-function
-selectSearchPrint($Z,$f,$v){print_fieldset("search",'Search',$Z);foreach($v
-as$s=>$u){if($u["type"]=="FULLTEXT"){echo"(<i>".implode("</i>, <i>",array_map('h',$u["columns"]))."</i>) AGAINST"," <input type='search' name='fulltext[$s]' value='".h($_GET["fulltext"][$s])."' onchange='selectFieldChange(this.form);'>",checkbox("boolean[$s]",1,isset($_GET["boolean"][$s]),"BOOL"),"<br>\n";}}$_GET["where"]=(array)$_GET["where"];reset($_GET["where"]);$Ya="this.nextSibling.onchange();";for($s=0;$s<=count($_GET["where"]);$s++){list(,$X)=each($_GET["where"]);if(!$X||("$X[col]$X[val]"!=""&&in_array($X["op"],$this->operators))){echo"<div>".select_input(" name='where[$s][col]' onchange='$Ya'",$f,$X["col"],"(".'anywhere'.")"),html_select("where[$s][op]",$this->operators,$X["op"],$Ya),"<input type='search' name='where[$s][val]' value='".h($X["val"])."' onchange='".($X?"selectFieldChange(this.form)":"selectAddRow(this)").";' onkeydown='selectSearchKeydown(this, event);' onsearch='selectSearchSearch(this);'></div>\n";}}echo"</div></fieldset>\n";}
-function
-selectOrderPrint($Te,$f,$v){print_fieldset("sort",'Sort',$Te);$s=0;foreach((array)$_GET["order"]as$x=>$X){if($X!=""){echo"<div>".select_input(" name='order[$s]' onchange='selectFieldChange(this.form);'",$f,$X),checkbox("desc[$s]",1,isset($_GET["desc"][$x]),'descending')."</div>\n";$s++;}}echo"<div>".select_input(" name='order[$s]' onchange='selectAddRow(this);'",$f),checkbox("desc[$s]",1,false,'descending')."</div>\n","</div></fieldset>\n";}
-function
-selectLimitPrint($z){echo"<fieldset><legend>".'Limit'."</legend><div>";echo"<input type='number' name='limit' class='size' value='".h($z)."' onchange='selectFieldChange(this.form);'>","</div></fieldset>\n";}
-function
-selectLengthPrint($eh){if($eh!==null){echo"<fieldset><legend>".'Text length'."</legend><div>","<input type='number' name='text_length' class='size' value='".h($eh)."'>","</div></fieldset>\n";}}
-function
-selectActionPrint($v){echo"<fieldset><legend>".'Action'."</legend><div>","<input type='submit' value='".'Select'."'>"," <span id='noindex' title='".'Full table scan'."'></span>","<script type='text/javascript'>\n","var indexColumns = ";$f=array();foreach($v
-as$u){if($u["type"]!="FULLTEXT")$f[reset($u["columns"])]=1;}$f[""]=1;foreach($f
-as$x=>$X)json_row($x);echo";\n","selectFieldChange(document.getElementById('form'));\n","</script>\n","</div></fieldset>\n";}
-function
-selectCommandPrint(){return!information_schema(DB);}
-function
-selectImportPrint(){return!information_schema(DB);}
-function
-selectEmailPrint($ic,$f){}
-function
-selectColumnsProcess($f,$v){global$Sc,$Xc;$M=array();$Vc=array();foreach((array)$_GET["columns"]as$x=>$X){if($X["fun"]=="count"||($X["col"]!=""&&(!$X["fun"]||in_array($X["fun"],$Sc)||in_array($X["fun"],$Xc)))){$M[$x]=apply_sql_function($X["fun"],($X["col"]!=""?idf_escape($X["col"]):"*"));if(!in_array($X["fun"],$Xc))$Vc[]=$M[$x];}}return
-array($M,$Vc);}
-function
-selectSearchProcess($p,$v){global$g,$w;$J=array();foreach($v
-as$s=>$u){if($u["type"]=="FULLTEXT"&&$_GET["fulltext"][$s]!="")$J[]="MATCH (".implode(", ",array_map('idf_escape',$u["columns"])).") AGAINST (".q($_GET["fulltext"][$s]).(isset($_GET["boolean"][$s])?" IN BOOLEAN MODE":"").")";}foreach((array)$_GET["where"]as$X){if("$X[col]$X[val]"!=""&&in_array($X["op"],$this->operators)){$sb=" $X[op]";if(preg_match('~IN$~',$X["op"])){$ld=process_length($X["val"]);$sb.=" ".($ld!=""?$ld:"(NULL)");}elseif($X["op"]=="SQL")$sb=" $X[val]";elseif($X["op"]=="LIKE %%")$sb=" LIKE ".$this->processInput($p[$X["col"]],"%$X[val]%");elseif($X["op"]=="ILIKE %%")$sb=" ILIKE ".$this->processInput($p[$X["col"]],"%$X[val]%");elseif(!preg_match('~NULL$~',$X["op"]))$sb.=" ".$this->processInput($p[$X["col"]],$X["val"]);if($X["col"]!="")$J[]=idf_escape($X["col"]).$sb;else{$nb=array();foreach($p
-as$C=>$o){$Ad=preg_match('~char|text|enum|set~',$o["type"]);if((is_numeric($X["val"])||!preg_match('~(^|[^o])int|float|double|decimal|bit~',$o["type"]))&&(!preg_match("~[\x80-\xFF]~",$X["val"])||$Ad)){$C=idf_escape($C);$nb[]=($w=="sql"&&$Ad&&!preg_match("~^utf8_~",$o["collation"])?"CONVERT($C USING ".charset($g).")":$C);}}$J[]=($nb?"(".implode("$sb OR ",$nb)."$sb)":"0");}}}return$J;}
-function
-processInput($o,$Y,$r=""){if($r=="SQL")return$Y;$C=$o["field"];$J=q($Y);if(preg_match('~^(now|getdate|uuid)$~',$r))$J="$r()";elseif(preg_match('~^current_(date|timestamp)$~',$r))$J=$r;elseif(preg_match('~^([+-]|\\|\\|)$~',$r))$J=idf_escape($C)." $r $J";elseif(preg_match('~^[+-] interval$~',$r))$J=idf_escape($C)." $r ".(preg_match("~^(\\d+|'[0-9.: -]') [A-Z_]+$~i",$Y)?$Y:$J);elseif(preg_match('~^(addtime|subtime|concat)$~',$r))$J="$r(".idf_escape($C).", $J)";elseif(preg_match('~^(md5|sha1|password|encrypt)$~',$r))$J="$r($J)";return
-unconvert_field($o,$J);}
-function
-selectOrderProcess($p,$v){$J=array();foreach((array)$_GET["order"]as$x=>$X){if($X!="")$J[]=(preg_match('~^((COUNT\\(DISTINCT |[A-Z0-9_]+\\()(`(?:[^`]|``)+`|"(?:[^"]|"")+")\\)|COUNT\\(\\*\\))$~',$X)?$X:idf_escape($X)).(isset($_GET["desc"][$x])?" DESC":"");}return$J;}
-function
-selectLimitProcess(){return(isset($_GET["limit"])?$_GET["limit"]:"50");}
-function
-selectLengthProcess(){return(isset($_GET["text_length"])?$_GET["text_length"]:"100");}
-function
-selectEmailProcess($Z,$Lc){return
-false;}
-function
-selectQueryBuild($M,$Z,$Vc,$Te,$z,$E){return"";}
-function
-messageQuery($H,$fh){global$w;restart_session();$cd=&get_session("queries");$hd="sql-".count($cd[$_GET["db"]]);if(strlen($H)>1e6)$H=preg_replace('~[\x80-\xFF]+$~','',substr($H,0,1e6))."\n...";$cd[$_GET["db"]][]=array($H,time(),$fh);return" <span class='time'>".@date("H:i:s")."</span> <a href='#$hd' onclick=\"return !toggle('$hd');\">".'SQL command'."</a>"."<div id='$hd' class='hidden'><pre><code class='jush-$w'>".shorten_utf8($H,1000).'</code></pre>'.($fh?" <span class='time'>($fh)</span>":'').(support("sql")?'<p><a href="'.h(str_replace("db=".urlencode(DB),"db=".urlencode($_GET["db"]),ME).'sql=&history='.(count($cd[$_GET["db"]])-1)).'">'.'Edit'.'</a>':'').'</div>';}
-function
-editFunctions($o){global$dc;$J=($o["null"]?"NULL/":"");foreach($dc
-as$x=>$Sc){if(!$x||(!isset($_GET["call"])&&(isset($_GET["select"])||where($_GET)))){foreach($Sc
-as$pf=>$X){if(!$pf||preg_match("~$pf~",$o["type"]))$J.="/$X";}if($x&&!preg_match('~set|blob|bytea|raw|file~',$o["type"]))$J.="/SQL";}}if($o["auto_increment"]&&!isset($_GET["select"])&&!where($_GET))$J='Auto Increment';return
-explode("/",$J);}
-function
-editInput($Q,$o,$Ia,$Y){if($o["type"]=="enum")return(isset($_GET["select"])?"<label><input type='radio'$Ia value='-1' checked><i>".'original'."</i></label> ":"").($o["null"]?"<label><input type='radio'$Ia value=''".($Y!==null||isset($_GET["select"])?"":" checked")."><i>NULL</i></label> ":"").enum_input("radio",$Ia,$o,$Y,0);return"";}
-function
-dumpOutput(){$J=array('text'=>'open','file'=>'save');if(function_exists('gzencode'))$J['gz']='gzip';return$J;}
-function
-dumpFormat(){return
-array('sql'=>'SQL','csv'=>'CSV,','csv;'=>'CSV;','tsv'=>'TSV');}
-function
-dumpDatabase($m){}
-function
-dumpTable($Q,$Jg,$Bd=0){if($_POST["format"]!="sql"){echo"\xef\xbb\xbf";if($Jg)dump_csv(array_keys(fields($Q)));}else{if($Bd==2){$p=array();foreach(fields($Q)as$C=>$o)$p[]=idf_escape($C)." $o[full_type]";$i="CREATE TABLE ".table($Q)." (".implode(", ",$p).")";}else$i=create_sql($Q,$_POST["auto_increment"]);set_utf8mb4($i);if($Jg&&$i){if($Jg=="DROP+CREATE"||$Bd==1)echo"DROP ".($Bd==2?"VIEW":"TABLE")." IF EXISTS ".table($Q).";\n";if($Bd==1)$i=remove_definer($i);echo"$i;\n\n";}}}
-function
-dumpData($Q,$Jg,$H){global$g,$w;$ce=($w=="sqlite"?0:1048576);if($Jg){if($_POST["format"]=="sql"){if($Jg=="TRUNCATE+INSERT")echo
-truncate_sql($Q).";\n";$p=fields($Q);}$I=$g->query($H,1);if($I){$ud="";$Wa="";$Id=array();$Lg="";$Ec=($Q!=''?'fetch_assoc':'fetch_row');while($K=$I->$Ec()){if(!$Id){$Qh=array();foreach($K
-as$X){$o=$I->fetch_field();$Id[]=$o->name;$x=idf_escape($o->name);$Qh[]="$x = VALUES($x)";}$Lg=($Jg=="INSERT+UPDATE"?"\nON DUPLICATE KEY UPDATE ".implode(", ",$Qh):"").";\n";}if($_POST["format"]!="sql"){if($Jg=="table"){dump_csv($Id);$Jg="INSERT";}dump_csv($K);}else{if(!$ud)$ud="INSERT INTO ".table($Q)." (".implode(", ",array_map('idf_escape',$Id)).") VALUES";foreach($K
-as$x=>$X){$o=$p[$x];$K[$x]=($X!==null?unconvert_field($o,preg_match('~(^|[^o])int|float|double|decimal~',$o["type"])&&$X!=''?$X:q($X)):"NULL");}$ig=($ce?"\n":" ")."(".implode(",\t",$K).")";if(!$Wa)$Wa=$ud.$ig;elseif(strlen($Wa)+4+strlen($ig)+strlen($Lg)<$ce)$Wa.=",$ig";else{echo$Wa.$Lg;$Wa=$ud.$ig;}}}if($Wa)echo$Wa.$Lg;}elseif($_POST["format"]=="sql")echo"-- ".str_replace("\n"," ",$g->error)."\n";}}
-function
-dumpFilename($id){return
-friendly_url($id!=""?$id:(SERVER!=""?SERVER:"localhost"));}
-function
-dumpHeaders($id,$re=false){$df=$_POST["output"];$zc=(preg_match('~sql~',$_POST["format"])?"sql":($re?"tar":"csv"));header("Content-Type: ".($df=="gz"?"application/x-gzip":($zc=="tar"?"application/x-tar":($zc=="sql"||$df!="file"?"text/plain":"text/csv")."; charset=utf-8")));if($df=="gz")ob_start('ob_gzencode',1e6);return$zc;}
-function
-homepage(){echo'<p class="links">'.($_GET["ns"]==""&&support("database")?'<a href="'.h(ME).'database=">'.'Alter database'."</a>\n":""),(support("scheme")?"<a href='".h(ME)."scheme='>".($_GET["ns"]!=""?'Alter schema':'Create schema')."</a>\n":""),($_GET["ns"]!==""?'<a href="'.h(ME).'schema=">'.'Database schema'."</a>\n":""),(support("privileges")?"<a href='".h(ME)."privileges='>".'Privileges'."</a>\n":"");return
-true;}
-function
-navigation($qe){global$ia,$w,$Vb,$g;echo'<h1>
-',$this->name(),' <span class="version">',$ia,'</span>
-<a href="https://www.adminer.org/#download" target="_blank" id="version">',(version_compare($ia,$_COOKIE["adminer_version"])<0?h($_COOKIE["adminer_version"]):""),'</a>
+    function
+    fieldName(
+        $o,
+        $Te = 0
+    ) {
+        return '<span title="' . h($o["full_type"]) . '">' . h($o["field"]) . '</span>';
+    }
+
+    function
+    selectLinks(
+        $Pg,
+        $O = ""
+    ) {
+        echo '<p class="links">';
+        $Vd = array("select" => 'Select data');
+        if (support("table") || support("indexes")) {
+            $Vd["table"] = 'Show structure';
+        }
+        if (support("table")) {
+            if (is_view($Pg)) {
+                $Vd["view"] = 'Alter view';
+            } else {
+                $Vd["create"] = 'Alter table';
+            }
+        }
+        if ($O !== null) {
+            $Vd["edit"] = 'New item';
+        }
+        foreach ($Vd
+                 as $x => $X) {
+            echo " <a href='" . h(ME) . "$x=" . urlencode($Pg["Name"]) . ($x == "edit" ? $O
+                    : "") . "'" . bold(isset($_GET[$x])) . ">$X</a>";
+        }
+        echo "\n";
+    }
+
+    function
+    foreignKeys(
+        $Q
+    ) {
+        return
+            foreign_keys($Q);}
+
+    function
+    backwardKeys(
+        $Q,
+        $Og
+    ) {
+        return
+            array();
+    }
+
+    function
+    backwardKeysPrint($Na,$K){}
+
+    function
+    selectQuery(
+        $H,
+        $fh
+    ) {
+        global $w;
+
+        return "<p><code class='jush-$w'>" . h(str_replace("\n", " ",
+            $H)) . "</code> <span class='time'>($fh)</span>" . (support("sql")
+            ? " <a href='" . h(ME) . "sql=" . urlencode($H) . "'>" . 'Edit' . "</a>" : "")."</p>";}
+
+    function
+    rowDescription(
+        $Q
+    ) {return"";}
+
+    function
+    rowDescriptions(
+        $L,
+        $Lc
+    ) {
+        return $L;
+    }
+
+    function
+    selectLink($X,$o){}
+
+    function
+    selectVal(
+        $X,
+        $_,
+        $o,
+        $af
+    ) {
+        $J = ($X === null ? "<i>NULL</i>"
+            : (preg_match("~char|binary~", $o["type"]) && !preg_match("~var~", $o["type"]) ? "<code>$X</code>" : $X));
+        if (preg_match('~blob|bytea|raw|file~', $o["type"]) && !is_utf8($X)) {
+            $J = lang(array('%d byte', '%d bytes'), strlen($af));
+        }
+
+        return ($_ ? "<a href='" . h($_) . "'" . (is_url($_) ? " rel='noreferrer'" : "") . ">$J</a>":$J);
+    }
+
+    function
+    editVal(
+        $X,
+        $o){return$X;
+    }
+
+    function
+    selectColumnsPrint(
+        $M,
+        $f
+    ) {
+        global $Sc, $Xc;
+        print_fieldset("select", 'Select', $M);
+        $s     = 0;
+        $M[""] = array();
+        foreach ($M
+                 as $x => $X) {
+            $X = $_GET["columns"][$x];
+            $e = select_input(" name='columns[$s][col]' onchange='" . ($x !== "" ? "selectFieldChange(this.form)"
+                    : "selectAddRow(this)") . ";'", $f, $X["col"]);
+            echo "<div>" . ($Sc || $Xc ? "<select name='columns[$s][fun]' onchange='helpClose();" . ($x !== "" ? ""
+                        : " this.nextSibling.nextSibling.onchange();") . "'" . on_help("getTarget(event).value && getTarget(event).value.replace(/ |\$/, '(') + ')'",
+                        1) . ">" . optionlist(array(-1 => "") + array_filter(array(
+                            'Functions'   => $Sc,
+                            'Aggregation' => $Xc
+                        )), $X["fun"]) . "</select>" . "($e)" : $e) . "</div>\n";
+            $s++;
+        }
+        echo "</div></fieldset>\n";
+    }
+
+    function
+    selectSearchPrint(
+        $Z,
+        $f,
+        $v
+    ) {
+        print_fieldset("search", 'Search', $Z);
+        foreach ($v
+                 as $s => $u) {
+            if ($u["type"] == "FULLTEXT") {
+                echo "(<i>" . implode("</i>, <i>", array_map('h',
+                        $u["columns"])) . "</i>) AGAINST", " <input type='search' name='fulltext[$s]' value='" . h($_GET["fulltext"][$s]) . "' onchange='selectFieldChange(this.form);'>", checkbox("boolean[$s]",
+                    1, isset($_GET["boolean"][$s]), "BOOL"), "<br>\n";
+            }
+        }
+        $_GET["where"] = (array)$_GET["where"];
+        reset($_GET["where"]);
+        $Ya = "this.nextSibling.onchange();";
+        for ($s = 0; $s <= count($_GET["where"]); $s++) {
+            list(, $X) = each($_GET["where"]);
+            if (!$X || ("$X[col]$X[val]" != "" && in_array($X["op"], $this->operators))) {
+                echo "<div>" . select_input(" name='where[$s][col]' onchange='$Ya'", $f, $X["col"],
+                        "(" . 'anywhere' . ")"), html_select("where[$s][op]", $this->operators, $X["op"],
+                    $Ya), "<input type='search' name='where[$s][val]' value='" . h($X["val"]) . "' onchange='" . ($X
+                        ? "selectFieldChange(this.form)"
+                        : "selectAddRow(this)") . ";' onkeydown='selectSearchKeydown(this, event);' onsearch='selectSearchSearch(this);'></div>\n";
+            }
+        }
+        echo "</div></fieldset>\n";
+    }
+
+    function
+    selectOrderPrint(
+        $Te,
+        $f,
+        $v
+    ) {
+        print_fieldset("sort", 'Sort', $Te);
+        $s = 0;
+        foreach ((array)$_GET["order"] as $x => $X) {
+            if ($X != "") {
+                echo "<div>" . select_input(" name='order[$s]' onchange='selectFieldChange(this.form);'", $f,
+                        $X), checkbox("desc[$s]", 1, isset($_GET["desc"][$x]), 'descending') . "</div>\n";
+                $s++;
+            }
+        }
+        echo "<div>" . select_input(" name='order[$s]' onchange='selectAddRow(this);'", $f), checkbox("desc[$s]", 1,
+                false, 'descending') . "</div>\n", "</div></fieldset>\n";
+    }
+
+    function
+    selectLimitPrint(
+        $z
+    ) {
+        echo "<fieldset><legend>" . 'Limit' . "</legend><div>";
+        echo "<input type='number' name='limit' class='size' value='" . h($z) . "' onchange='selectFieldChange(this.form);'>", "</div></fieldset>\n";
+    }
+
+    function
+    selectLengthPrint(
+        $eh
+    ) {
+        if ($eh !== null) {
+            echo "<fieldset><legend>" . 'Text length' . "</legend><div>", "<input type='number' name='text_length' class='size' value='" . h($eh) . "'>", "</div></fieldset>\n";
+        }
+    }
+
+    function
+    selectActionPrint(
+        $v
+    ) {
+        echo "<fieldset><legend>" . 'Action' . "</legend><div>", "<input type='submit' value='" . 'Select' . "'>", " <span id='noindex' title='" . 'Full table scan' . "'></span>", "<script type='text/javascript'>\n", "var indexColumns = ";
+        $f = array();
+        foreach ($v
+                 as $u) {
+            if ($u["type"] != "FULLTEXT") {
+                $f[reset($u["columns"])] = 1;
+            }
+        }
+        $f[""] = 1;
+        foreach ($f
+                 as $x => $X) {
+            json_row($x);
+        }
+        echo ";\n", "selectFieldChange(document.getElementById('form'));\n", "</script>\n", "</div></fieldset>\n";
+    }
+
+    function
+    selectCommandPrint()
+    {
+        return !information_schema(DB);
+    }
+
+    function
+    selectImportPrint()
+    {
+        return !information_schema(DB);
+    }
+
+    function
+    selectEmailPrint($ic,
+        $f
+    ) {
+    }
+
+    function
+    selectColumnsProcess(
+        $f,
+        $v
+    ) {
+        global $Sc, $Xc;
+        $M  = array();
+        $Vc = array();
+        foreach ((array)$_GET["columns"] as $x => $X) {
+            if ($X["fun"] == "count" || ($X["col"] != "" && (!$X["fun"] || in_array($X["fun"],
+                            $Sc) || in_array($X["fun"], $Xc)))
+            ) {
+                $M[$x] = apply_sql_function($X["fun"], ($X["col"] != "" ? idf_escape($X["col"]) : "*"));
+                if (!in_array($X["fun"], $Xc)) {
+                    $Vc[] = $M[$x];
+                }
+            }
+        }
+
+        return
+array($M, $Vc);
+    }
+
+    function
+    selectSearchProcess(
+        $p,
+        $v
+    ) {
+        global $g, $w;
+        $J = array();
+        foreach ($v
+                 as $s => $u) {
+            if ($u["type"] == "FULLTEXT" && $_GET["fulltext"][$s] != "") {
+                $J[] = "MATCH (" . implode(", ", array_map('idf_escape',
+                        $u["columns"])) . ") AGAINST (" . q($_GET["fulltext"][$s]) . (isset($_GET["boolean"][$s])
+                        ? " IN BOOLEAN MODE" : "") . ")";
+            }
+        }
+        foreach ((array)$_GET["where"] as $X) {
+            if ("$X[col]$X[val]" != "" && in_array($X["op"], $this->operators)) {
+                $sb = " $X[op]";
+                if (preg_match('~IN$~', $X["op"])) {
+                    $ld = process_length($X["val"]);
+                    $sb .= " " . ($ld != "" ? $ld : "(NULL)");
+                } elseif ($X["op"] == "SQL") {
+                    $sb = " $X[val]";
+                } elseif ($X["op"] == "LIKE %%") {
+                    $sb = " LIKE " . $this->processInput($p[$X["col"]], "%$X[val]%");
+                } elseif ($X["op"] == "ILIKE %%") {
+                    $sb = " ILIKE " . $this->processInput($p[$X["col"]], "%$X[val]%");
+                } elseif (!preg_match('~NULL$~', $X["op"])) {
+                    $sb .= " " . $this->processInput($p[$X["col"]], $X["val"]);
+                }
+                if ($X["col"] != "") $J[] = idf_escape($X["col"]) . $sb; else {
+                    $nb = array();
+                    foreach ($p
+                             as $C => $o) {
+                        $Ad = preg_match('~char|text|enum|set~', $o["type"]);
+                        if ((is_numeric($X["val"]) || !preg_match('~(^|[^o])int|float|double|decimal|bit~',
+                                    $o["type"])) && (!preg_match("~[\x80-\xFF]~", $X["val"]) || $Ad)
+                        ) {
+                            $C    = idf_escape($C);
+                            $nb[] = ($w == "sql" && $Ad && !preg_match("~^utf8_~", $o["collation"])
+                                ? "CONVERT($C USING " . charset($g) . ")" : $C);
+                        }
+                    }
+                    $J[] = ($nb ? "(" . implode("$sb OR ", $nb) . "$sb)" : "0");
+                }
+            }
+        }
+
+        return $J;
+    }
+
+    function
+    processInput(
+        $o,
+        $Y,
+        $r = ""
+    ) {
+        if ($r == "SQL") {
+            return $Y;
+        }
+        $C = $o["field"];
+        $J = q($Y);
+        if (preg_match('~^(now|getdate|uuid)$~', $r)) {
+            $J = "$r()";
+        } elseif (preg_match('~^current_(date|timestamp)$~', $r)) {
+            $J = $r;
+        } elseif (preg_match('~^([+-]|\\|\\|)$~', $r)) {
+            $J = idf_escape($C) . " $r $J";
+        } elseif (preg_match('~^[+-] interval$~', $r)) {
+            $J = idf_escape($C) . " $r " . (preg_match("~^(\\d+|'[0-9.: -]') [A-Z_]+$~i", $Y) ? $Y : $J);
+        } elseif (preg_match('~^(addtime|subtime|concat)$~', $r)) {
+            $J = "$r(" . idf_escape($C) . ", $J)";
+        } elseif (preg_match('~^(md5|sha1|password|encrypt)$~', $r)) {
+            $J = "$r($J)";
+        }
+
+        return
+            unconvert_field($o, $J);
+    }
+
+    function
+    selectOrderProcess(
+        $p,
+        $v
+    ) {
+        $J = array();
+        foreach ((array)$_GET["order"] as $x => $X) {
+            if ($X != "") $J[] = (preg_match('~^((COUNT\\(DISTINCT |[A-Z0-9_]+\\()(`(?:[^`]|``)+`|"(?:[^"]|"")+")\\)|COUNT\\(\\*\\))$~',
+                    $X) ? $X : idf_escape($X)) . (isset($_GET["desc"][$x]) ? " DESC" : "");
+        }
+
+        return $J;
+    }
+
+    function
+    selectLimitProcess()
+    {
+        return (isset($_GET["limit"]) ? $_GET["limit"] : "50");
+    }
+
+    function
+    selectLengthProcess()
+    {
+        return (isset($_GET["text_length"]) ? $_GET["text_length"] : "100");
+    }
+
+    function
+selectEmailProcess(
+        $Z,
+        $Lc
+    ) {
+        return
+            false;
+    }
+
+    function
+    selectQueryBuild(
+        $M,
+        $Z,
+        $Vc,
+        $Te,
+        $z,
+        $E
+    ) {
+        return "";
+    }
+
+    function
+    messageQuery(
+        $H,
+        $fh
+    ) {
+        global $w;
+        restart_session();
+        $cd =& get_session("queries");
+        $hd = "sql-" . count($cd[$_GET["db"]]);
+        if (strlen($H) > 1e6) {
+            $H = preg_replace('~[\x80-\xFF]+$~', '', substr($H, 0, 1e6)) . "\n...";
+        }
+        $cd[$_GET["db"]][] = array($H, time(), $fh);
+
+        return " <span class='time'>" . @date("H:i:s") . "</span> <a href='#$hd' onclick=\"return !toggle('$hd');\">" . 'SQL command' . "</a>" . "<div id='$hd' class='hidden'><pre><code class='jush-$w'>" . shorten_utf8($H,
+            1000) . '</code></pre>' . ($fh ? " <span class='time'>($fh)</span>" : '') . (support("sql")
+            ? '<p><a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]),
+                    ME) . 'sql=&history=' . (count($cd[$_GET["db"]])-1)) . '">' . 'Edit' . '</a>' : '') . '</div>';
+    }
+
+    function
+    editFunctions(
+        $o
+    ) {
+        global $dc;
+        $J = ($o["null"] ? "NULL/" : "");
+        foreach ($dc
+                 as $x => $Sc) {
+            if (!$x || (!isset($_GET["call"]) && (isset($_GET["select"]) || where($_GET)))) {
+                foreach ($Sc
+                         as $pf => $X) {
+                    if (!$pf || preg_match("~$pf~", $o["type"])) {
+                        $J .= "/$X";
+                    }
+                }
+                if ($x && !preg_match('~set|blob|bytea|raw|file~', $o["type"])) {
+                    $J .= "/SQL";
+                }
+            }
+        }
+        if ($o["auto_increment"] && !isset($_GET["select"]) && !where($_GET))$J='Auto Increment';
+
+        return
+            explode("/", $J);
+    }
+
+    function
+    editInput(
+        $Q,
+        $o,
+        $Ia,
+        $Y
+    ) {
+        if ($o["type"] == "enum") return (isset($_GET["select"])
+            ? "<label><input type='radio'$Ia value='-1' checked><i>" . 'original' . "</i></label> " : "") . ($o["null"]
+            ? "<label><input type='radio'$Ia value=''" . ($Y !== null || isset($_GET["select"]) ? ""
+                : " checked") . "><i>NULL</i></label> ":"").enum_input("radio", $Ia, $o, $Y, 0);
+
+        return "";
+    }
+
+    function
+    dumpOutput()
+    {
+        $J = array('text' => 'open', 'file' => 'save');
+        if (function_exists('gzencode')) $J['gz'] = 'gzip';
+
+        return $J;
+    }
+
+    function
+    dumpFormat()
+    {
+        return
+            array('sql' => 'SQL', 'csv' => 'CSV,', 'csv;' => 'CSV;', 'tsv' => 'TSV');
+    }
+
+    function
+    dumpDatabase(
+        $m
+    ) {
+    }
+
+    function
+    dumpTable(
+        $Q,
+        $Jg,
+        $Bd = 0
+    ) {
+        if ($_POST["format"] != "sql") {
+            echo "\xef\xbb\xbf";
+            if ($Jg) {
+                dump_csv(array_keys(fields($Q)));
+            }
+        } else {
+            if ($Bd == 2) {
+                $p = array();
+                foreach (fields($Q) as $C => $o) {
+                    $p[] = idf_escape($C) . " $o[full_type]";
+                }
+                $i = "CREATE TABLE " . table($Q) . " (" . implode(", ", $p) . ")";
+            } else {
+                $i = create_sql($Q, $_POST["auto_increment"]);
+            }
+            set_utf8mb4($i);
+            if ($Jg && $i) {
+                if ($Jg == "DROP+CREATE" || $Bd == 1) {
+                    echo "DROP " . ($Bd == 2 ? "VIEW" : "TABLE") . " IF EXISTS " . table($Q) . ";\n";
+                }
+                if($Bd == 1) $i = remove_definer($i);
+                echo "$i;\n\n";
+            }
+        }
+    }
+
+    function
+    dumpData(
+        $Q,
+        $Jg,
+        $H
+    ) {
+        global $g, $w;
+        $ce = ($w == "sqlite" ? 0 : 1048576);
+        if ($Jg) {
+            if ($_POST["format"] == "sql") {
+                if ($Jg == "TRUNCATE+INSERT") {
+                    echo
+                        truncate_sql($Q) . ";\n";
+                }
+                $p = fields($Q);
+            }
+            $I = $g->query($H, 1);
+            if ($I) {
+                $ud = "";
+                $Wa = "";
+                $Id = array();
+                $Lg = "";
+                $Ec = ($Q != '' ? 'fetch_assoc' : 'fetch_row');
+                while ($K = $I->$Ec()) {
+                    if (!$Id) {
+                        $Qh = array();
+                        foreach ($K
+                                 as $X) {
+                            $o    = $I->fetch_field();
+                            $Id[] = $o->name;
+                            $x    = idf_escape($o->name);
+                            $Qh[] = "$x = VALUES($x)";
+                        }
+                        $Lg = ($Jg == "INSERT+UPDATE" ? "\nON DUPLICATE KEY UPDATE " . implode(", ", $Qh) : "") . ";\n";
+                    }
+                    if ($_POST["format"] != "sql") {
+                        if ($Jg == "table") {
+                            dump_csv($Id);
+                            $Jg = "INSERT";
+                        }
+                        dump_csv($K);
+                    } else {
+                        if (!$ud) {
+                            $ud = "INSERT INTO " . table($Q) . " (" . implode(", ",
+                                    array_map('idf_escape', $Id)) . ") VALUES";
+                        }
+                        foreach ($K
+                                 as $x => $X) {
+                            $o     = $p[$x];
+                            $K[$x] = ($X !== null ? unconvert_field($o,
+                                preg_match('~(^|[^o])int|float|double|decimal~', $o["type"]) && $X != '' ? $X : q($X))
+                                : "NULL");
+                        }
+                        $ig = ($ce ? "\n" : " ") . "(" . implode(",\t", $K) . ")";
+                        if (!$Wa) {
+                            $Wa = $ud . $ig;
+                        } elseif (strlen($Wa) + 4 + strlen($ig) + strlen($Lg) < $ce) {
+                            $Wa .= ",$ig";
+                        } else {
+                            echo $Wa . $Lg;
+                            $Wa = $ud . $ig;
+                        }
+                    }
+                }
+                if ($Wa) {
+                    echo $Wa . $Lg;
+                }
+            } elseif ($_POST["format"] == "sql") echo "-- " . str_replace("\n", " ", $g->error) . "\n";
+        }
+    }
+
+    function
+    dumpFilename(
+        $id
+    ) {return
+friendly_url($id != "" ? $id : (SERVER != "" ? SERVER : "localhost"));
+    }
+
+    function
+    dumpHeaders(
+        $id,
+        $re = false
+    ) {
+        $df = $_POST["output"];
+        $zc = (preg_match('~sql~', $_POST["format"]) ? "sql" : ($re ? "tar" : "csv"));
+        header("Content-Type: " . ($df == "gz" ? "application/x-gzip"
+                : ($zc == "tar" ? "application/x-tar"
+                    : ($zc == "sql" || $df != "file" ? "text/plain" : "text/csv") . "; charset=utf-8")));
+        if ($df == "gz") {
+            ob_start('ob_gzencode', 1e6);
+        }
+
+        return $zc;
+    }
+
+    function
+    homepage()
+    {
+        echo '<p class="links">' . ($_GET["ns"] == "" && support("database")
+                ? '<a href="' . h(ME) . 'database=">' . 'Alter database' . "</a>\n" : ""), (support("scheme")
+            ? "<a href='" . h(ME) . "scheme='>" . ($_GET["ns"] != "" ? 'Alter schema' : 'Create schema') . "</a>\n"
+            : ""), ($_GET["ns"] !== "" ? '<a href="' . h(ME) . 'schema=">' . 'Database schema' . "</a>\n"
+            : ""), (support("privileges") ? "<a href='".h(ME) . "privileges='>" . 'Privileges' . "</a>\n" : "");
+
+        return
+            true;
+    }
+
+    function
+    navigation(
+        $qe
+    ) {
+        global $ia, $w, $Vb, $g;
+        echo '<h1>
+', $this->name(), ' <span class="version">', $ia, '</span>
+<a href="https://www.adminer.org/#download" target="_blank" id="version">', (version_compare($ia,
+            $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""), '</a>
 </h1>
-';if($qe=="auth"){$Ic=true;foreach((array)$_SESSION["pwds"]as$Sh=>$vg){foreach($vg
-as$N=>$Nh){foreach($Nh
-as$V=>$G){if($G!==null){if($Ic){echo"<p id='logins' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>\n";$Ic=false;}$Hb=$_SESSION["db"][$Sh][$N][$V];foreach(($Hb?array_keys($Hb):array(""))as$m)echo"<a href='".h(auth_url($Sh,$N,$V,$m))."'>($Vb[$Sh]) ".h($V.($N!=""?"@$N":"").($m!=""?" - $m":""))."</a><br>\n";}}}}}else{if($_GET["ns"]!==""&&!$qe&&DB!=""){$g->select_db(DB);$S=table_status('',true);}if(support("sql")){echo'<script type="text/javascript" src="',h(preg_replace("~\\?.*~","",ME))."?file=jush.js&amp;version=4.2.4",'"></script>
+';
+        if ($qe == "auth") {
+            $Ic = true;
+            foreach ((array)$_SESSION["pwds"] as $Sh => $vg) {
+                foreach ($vg
+                         as $N => $Nh) {
+                    foreach ($Nh
+                             as $V => $G) {
+                        if ($G !== null) {
+                            if ($Ic) {
+                                echo "<p id='logins' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>\n";
+                                $Ic = false;
+                            }
+                            $Hb = $_SESSION["db"][$Sh][$N][$V];
+                            foreach (($Hb ? array_keys($Hb) : array("")) as $m) {
+                                echo "<a href='" . h(auth_url($Sh, $N, $V, $m)) . "'>($Vb[$Sh]) " . h($V . ($N != ""
+                                            ? "@$N" : "") . ($m != "" ? " - $m" : "")) . "</a><br>\n";
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            if ($_GET["ns"] !== "" && !$qe && DB != "") {
+                $g->select_db(DB);
+                $S = table_status('', true);
+            }
+            if (support("sql")) {
+                echo '<script type="text/javascript" src="', h(preg_replace("~\\?.*~", "",
+                        ME)) . "?file=jush.js&amp;version=4.2.4", '"></script>
 <script type="text/javascript">
-';if($S){$Vd=array();foreach($S
-as$Q=>$U)$Vd[]=preg_quote($Q,'/');echo"var jushLinks = { $w: [ '".js_escape(ME).(support("table")?"table=":"select=")."\$&', /\\b(".implode("|",$Vd).")\\b/g ] };\n";foreach(array("bac","bra","sqlite_quo","mssql_bra")as$X)echo"jushLinks.$X = jushLinks.$w;\n";}echo'bodyLoad(\'',(is_object($g)?substr($g->server_info,0,3):""),'\');
+';
+                if ($S) {
+                    $Vd = array();
+                    foreach ($S
+                             as $Q => $U) {
+                        $Vd[] = preg_quote($Q, '/');
+                    }
+                    echo "var jushLinks = { $w: [ '" . js_escape(ME) . (support("table") ? "table="
+                            : "select=") . "\$&', /\\b(" . implode("|", $Vd) . ")\\b/g ] };\n";
+                    foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $X) {
+                        echo "jushLinks.$X = jushLinks.$w;\n";
+                    }
+                }
+                echo 'bodyLoad(\'', (is_object($g) ? substr($g->server_info, 0, 3) : ""), '\');
 </script>
-';}$this->databasesPrint($qe);if(DB==""||!$qe){echo"<p class='links'>".(support("sql")?"<a href='".h(ME)."sql='".bold(isset($_GET["sql"])&&!isset($_GET["import"])).">".'SQL command'."</a>\n<a href='".h(ME)."import='".bold(isset($_GET["import"])).">".'Import'."</a>\n":"")."";if(support("dump"))echo"<a href='".h(ME)."dump=".urlencode(isset($_GET["table"])?$_GET["table"]:$_GET["select"])."' id='dump'".bold(isset($_GET["dump"])).">".'Export'."</a>\n";}if($_GET["ns"]!==""&&!$qe&&DB!=""){echo'<a href="'.h(ME).'create="'.bold($_GET["create"]==="").">".'Create table'."</a>\n";if(!$S)echo"<p class='message'>".'No tables.'."\n";else$this->tablesPrint($S);}}}
-function
-name(){return"<a href='https://www.adminer.org/' target='_blank' id='h1'>Adminer</a>";}
-function
-databasesPrint($qe){global$b,$g;$l=$this->databases();echo'<form action="">
+';
+            }
+            $this->databasesPrint($qe);
+            if (DB == "" || !$qe) {
+                echo "<p class='links'>" . (support("sql")
+                        ? "<a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"]) && !isset($_GET["import"])) . ">" . 'SQL command' . "</a>\n<a href='" . h(ME) . "import='" . bold(isset($_GET["import"])) . ">" . 'Import' . "</a>\n"
+                        : "") . "";
+                if (support("dump")) {
+                    echo "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"]
+                            : $_GET["select"]) . "' id='dump'" . bold(isset($_GET["dump"])) . ">" . 'Export' . "</a>\n";
+                }
+            }
+            if ($_GET["ns"] !== "" && !$qe && DB != "") {
+                echo '<a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . 'Create table' . "</a>\n";
+                if (!$S) echo "<p class='message'>" . 'No tables.' . "\n"; else {
+                    $this->tablesPrint($S);
+                }
+            }
+        }
+    }
+
+    function
+    name()
+    {
+        return"<a href='https://www.adminer.org/' target='_blank' id='h1'>Adminer</a>";
+    }
+
+    function
+    databasesPrint(
+        $qe
+    ) {
+        global $b, $g;
+        $l = $this->databases();
+        echo '<form action="">
 <p id="dbs">
-';hidden_fields_get();$Fb=" onmousedown='dbMouseDown(event, this);' onchange='dbChange(this);'";echo"<span title='".'database'."'>DB</span>: ".($l?"<select name='db'$Fb>".optionlist(array(""=>"")+$l,DB)."</select>":'<input name="db" value="'.h(DB).'" autocapitalize="off">'),"<input type='submit' value='".'Use'."'".($l?" class='hidden'":"").">\n";if($qe!="db"&&DB!=""&&$g->select_db(DB)){if(support("scheme")){echo"<br>".'Schema'.": <select name='ns'$Fb>".optionlist(array(""=>"")+$b->schemas(),$_GET["ns"])."</select>";if($_GET["ns"]!="")set_schema($_GET["ns"]);}}echo(isset($_GET["sql"])?'<input type="hidden" name="sql" value="">':(isset($_GET["schema"])?'<input type="hidden" name="schema" value="">':(isset($_GET["dump"])?'<input type="hidden" name="dump" value="">':(isset($_GET["privileges"])?'<input type="hidden" name="privileges" value="">':"")))),"</p></form>\n";}
-function
-databases($Jc=true){return
-get_databases($Jc);}
-function
-schemas(){return
-schemas();}
-function
-tablesPrint($S){echo"<p id='tables' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>\n";foreach($S
-as$Q=>$Fg){echo'<a href="'.h(ME).'select='.urlencode($Q).'"'.bold($_GET["select"]==$Q||$_GET["edit"]==$Q,"select").">".'select'."</a> ";$C=$this->tableName($Fg);echo(support("table")||support("indexes")?'<a href="'.h(ME).'table='.urlencode($Q).'"'.bold(in_array($Q,array($_GET["table"],$_GET["create"],$_GET["indexes"],$_GET["foreign"],$_GET["trigger"])),(is_view($Fg)?"view":""),"structure")." title='".'Show structure'."'>$C</a>":"<span>$C</span>")."<br>\n";}}
+';
+        hidden_fields_get();
+        $Fb = " onmousedown='dbMouseDown(event, this);' onchange='dbChange(this);'";
+        echo "<span title='" . 'database' . "'>DB</span>: " . ($l
+                ? "<select name='db'$Fb>" . optionlist(array("" => "") + $l, DB) . "</select>"
+                : '<input name="db" value="' . h(DB) . '" autocapitalize="off">'), "<input type='submit' value='" . 'Use' . "'" . ($l
+                ? " class='hidden'" : "") . ">\n";
+        if ($qe != "db" && DB != "" && $g->select_db(DB)) {
+            if (support("scheme")) {
+                echo "<br>" . 'Schema' . ": <select name='ns'$Fb>" . optionlist(array("" => "") + $b->schemas(),
+                        $_GET["ns"]) . "</select>";
+                if ($_GET["ns"] != "") {
+                    set_schema($_GET["ns"]);
+                }
+            }
+        }
+        echo(isset($_GET["sql"])
+            ? '<input type="hidden" name="sql" value="">'
+            : (isset($_GET["schema"])
+                ? '<input type="hidden" name="schema" value="">'
+                : (isset($_GET["dump"]) ? '<input type="hidden" name="dump" value="">'
+                    : (isset($_GET["privileges"])?'<input type="hidden" name="privileges" value="">'
+                        : "")))),"</p></form>\n";
+    }
+
+    function
+    databases($Jc=true
+    ) {
+        return
+            get_databases($Jc);
+    }
+
+    function
+    schemas()
+    {
+        return
+            schemas();
+    }
+
+    function
+    tablesPrint(
+        $S
+    ) {
+        echo "<p id='tables' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>\n";
+        foreach ($S
+                 as $Q => $Fg) {
+            echo '<a href="' . h(ME) . 'select=' . urlencode($Q) . '"' . bold($_GET["select"] == $Q || $_GET["edit"] == $Q,
+                    "select") . ">" . 'select' . "</a> ";
+            $C = $this->tableName($Fg);
+            echo (support("table") || support("indexes")
+                    ? '<a href="' . h(ME) . 'table=' . urlencode($Q) . '"' . bold(in_array($Q,
+                        array($_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"])),
+                        (is_view($Fg) ? "view" : ""), "structure")." title='".'Show structure'."'>$C</a>":"<span>$C</span>")."<br>\n";}}
 function
 tableName($Pg){return
 h($Pg["Name"]);}}$b=(function_exists('adminer_object')?adminer_object():new
